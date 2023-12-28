@@ -1,24 +1,31 @@
- import React, { Component } from 'react';
+import React, { Component } from 'react';
 import EmpService from '../services/EmpService';
- 
- class ListEmpComponent extends Component {
-    constructor(props){
-        super(props)
+import { Link } from 'react-router-dom'; 
 
-        this.state={
-            employees:[]
-        }
+class ListEmpComponent extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            employees: []
+        };
     }
 
-    componentDidMount(){
+
+
+    componentDidMount() {
         EmpService.getEmployees().then(res => {
-            this.setState({employees:res.data});
+            this.setState({ employees: res.data });
         });
     }
+
     render() {
         return (
             <div>
                 <h2 className='text-center'>Employee List </h2>
+                <div className='row'>
+                    <Link to='/addEmployee' className='btn btn-primary'>Add Employee</Link>
+                </div>
                 <div className='row'>
                     <table className='table table-striped table bordered'>
                     <thead>
@@ -37,16 +44,18 @@ import EmpService from '../services/EmpService';
                                         <td>{employee.fname}</td>
                                         <td>{employee.lname}</td>
                                         <td>{employee.emailId}</td>
+                                        <td><button>Edit</button>
+                                            <button>Delete</button>
+                                        </td>
                                     </tr>
                                 )
                             }
                         </tbody>
-
                     </table>
                 </div>
             </div>
         );
     }
- }
- 
- export default ListEmpComponent;
+}
+
+export default ListEmpComponent;
