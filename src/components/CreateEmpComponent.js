@@ -1,101 +1,50 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import EmpService from '../services/EmpService';
 
-class CreateEmpComponent extends Component {
-    constructor(props) {
-        super(props);
+function CreateEmpComponent() {
+    const [employee, setEmployee] = useState({fname: '', lname: '', emailId: ''});
+    const navigate = useNavigate();
 
-        this.state = {
-            fName: '',
-            lName: '',
-            emailId: '',
-        };
+    const changeFNameHandler = (event) => setEmployee({...employee, fname: event.target.value});
+    const changeLNameHandler = (event) => setEmployee({...employee, lname: event.target.value});
+    const changeEmailIdHandler = (event) => setEmployee({...employee, emailId: event.target.value});
 
-        this.changeFNameHandler = this.changeFNameHandler.bind(this);
-        this.changeLNameHandler = this.changeLNameHandler.bind(this);
-        this.saveEmployee = this.saveEmployee.bind(this);
-        this.cancel = this.cancel.bind(this);
-    }
-
-    changeFNameHandler(event) {
-        this.setState({ fName: event.target.value });
-    }
-
-    changeLNameHandler(event) {
-        this.setState({ lName: event.target.value });
-    }
-
-    changEmailIdHandler(event) {
-        this.setState({ emailId: event.target.value });
-    }
-
-    saveEmployee(e) {
+    const saveEmployee = async (e) => {
         e.preventDefault();
-        let employee = {
-            fName: this.state.fName,
-            lName: this.state.lName,
-            emailId: this.state.emailId,
-        };
-        console.log('employee=>', JSON.stringify(employee));
+        await EmpService.createEmployee(employee);
+        navigate(-1); 
     }
 
-    cancel() {
-        this.props.history.push('/employees');
-    }
-
-    render() {
-        return (
-            <div>
-                <div className='container'>
-                    <div className='row'>
-                        <div className='card col-md-6 offset-md-3 offset-md-3' style={{ marginTop: '10px' }}>
-                            <h3 className='text-center'>Add Employee</h3>
-                            <div className='card-body'>
-                                <form>
-                                    <div className='form-group'>
-                                        <label>First Name: </label>
-                                        <input
-                                            placeholder='First Name'
-                                            name='fName'
-                                            className='form-control'
-                                            value={this.state.fName}
-                                            onChange={this.changeFNameHandler}
-                                        ></input>
-                                    </div>
-                                    <div className='form-group'>
-                                        <label>Last Name: </label>
-                                        <input
-                                            placeholder='Last Name'
-                                            name='lName'
-                                            className='form-control'
-                                            value={this.state.lName}
-                                            onChange={this.changeLNameHandler}
-                                        ></input>
-                                    </div>
-                                    <div className='form-group'>
-                                        <label>Email Id: </label>
-                                        <input
-                                            placeholder='Email Id'
-                                            name='emailId'
-                                            className='form-control'
-                                            value={this.state.emailId}
-                                            onChange={this.changEmailIdHandler.bind(this)}
-                                        ></input>
-                                    </div>
-                                    <button className='btn btn-success' onClick={this.saveEmployee}>
-                                        Save
-                                    </button>
-                                    <Link to='/employees' className='btn btn-danger'>
-                                        Cancel
-                                    </Link>
-                                </form>
-                            </div>
+    return (
+        <div>
+            <div className='container'>
+                <div className='row'>
+                    <div className='card col-md-6 offset-md-3 offset-md-3' style={{ marginTop: '10px' }}>
+                        <h3 className='text-center'>Add Employee</h3>
+                        <div className='card-body'>
+                            <form>
+                                <div className='form-group'>
+                                    <label>First Name: </label>
+                                    <input placeholder='First Name' name='fName' className='form-control' value={employee.fname} onChange={changeFNameHandler} />
+                                </div>
+                                <div className='form-group'>
+                                    <label>Last Name: </label>
+                                    <input placeholder='Last Name' name='lName' className='form-control' value={employee.lname} onChange={changeLNameHandler} />
+                                </div>
+                                <div className='form-group'>
+                                    <label>Email Id: </label>
+                                    <input placeholder='Email Id' name='emailId' className='form-control' value={employee.emailId} onChange={changeEmailIdHandler} />
+                                </div>
+                                <button className='btn btn-success' onClick={saveEmployee}> Save </button>
+                                <button className='btn btn-danger' onClick={() => navigate('/employees')}> Cancel </button>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
-        );
-    }
+        </div>
+    );
 }
 
 export default CreateEmpComponent;
